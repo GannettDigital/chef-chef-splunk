@@ -43,7 +43,6 @@ suites:
         outputs_conf:
           sslCommonNameToCheck: sslCommonName
           sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
-          sslPassword: password
           sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
           sslVerifyServerCert: false
         inputs_conf:
@@ -133,3 +132,36 @@ suites:
           runasroot: false
         accept_license: true
         is_server: false
+
+  - name: client-splunk_servers
+    run_list:
+      - recipe[chef-splunk::default]
+      - recipe[test::default]
+    attributes:
+      dev_mode: true
+      splunk:
+        accept_license: true
+        indexers_group1:
+          splunk_servers: '192.168.10.1:9997, 192.168.10.2:9997, 192.168.10.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        indexers_group2:
+          splunk_servers: '192.168.20.1:9997, 192.168.20.2:9997, 192.168.20.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        inputs_conf:
+          host: localhost
+          ports:
+            - port_num: 123123
+              config:
+                connection_host: dns
+                sourcetype: syslog
+                source: tcp:123123

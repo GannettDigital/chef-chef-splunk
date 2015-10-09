@@ -2,6 +2,12 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.4.1 (2015-10-07) - akemner
+-------------------
+
+- support for data cloning with load balancing in client.rb, providing splunk_servers as attribute rather then search
+
+
 v1.4.0 (2015-09-13)
 -------------------
 
