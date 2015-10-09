@@ -24,7 +24,6 @@ include Chef::Mixin::ShellOut
 class Chef
   class Provider
     class SplunkApp < Chef::Provider::LWRPBase
-
       provides :splunk_app
 
       use_inline_resources

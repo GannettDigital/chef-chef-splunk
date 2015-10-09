@@ -65,7 +65,6 @@ default['splunk']['indexers_group2']['outputs_conf'] = {
   'forwardedindex.filter.disable' => 'false'
 }
 
-
 # Add a host name if you need inputs.conf file to be configured
 # Note: if host is empty the inputs.conf template will not be used.
 default['splunk']['inputs_conf']['host'] = ''

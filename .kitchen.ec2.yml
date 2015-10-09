@@ -1,0 +1,59 @@
+driver:
+  name: ec2
+  aws_ssh_key_id: <%= ENV['AWS_SSH_KEY'] %>
+  security_group_ids:  <%= ENV['AWS_SECURITY_GROUPS'] %>
+  region: <%= ENV['AWS_REGION'] %>
+  availability_zone: <%= ENV['AWS_AVAILABILITY_ZONE'] %>
+  require_chef_omnibus: true
+  subnet_id: <%= ENV['AWS_SUBNET'] %>
+  associate_public_ip: false
+  interface: private
+  tags:
+    OWNER: <%= ENV['AWS_OWNER_TAG'] %>
+
+provisioner:
+  name: chef_zero
+  data_bags_path: "test/fixtures/data_bags"
+transport:
+  ssh_key: <%= ENV['SSH_KEY_PATH'] %><%= ENV['AWS_SSH_KEY'] %>.pem
+
+platforms:
+  - name: centos
+    driver:
+      image_id: <%= ENV['AWS_CENTOS_AMI_ID'] %>
+      instance_type: <%= ENV['LINUX_INSTANCE_SIZE'] %>
+      user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
+    transport:
+      username: <%= ENV['AWS_CENTOS_USERNAME'] %>
+
+suites:
+  - name: client-splunk_servers
+    run_list:
+      - recipe[chef-splunk::default]
+      - recipe[test::default]
+    attributes:
+      dev_mode: true
+      splunk:
+        accept_license: true
+        indexers_group1:
+          splunk_servers: '192.168.10.1:9997, 192.168.10.2:9997, 192.168.10.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        indexers_group2:
+          splunk_servers: '192.168.20.1:9997, 192.168.20.2:9997, 192.168.20.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        inputs_conf:
+          host: localhost
+          ports:
+            - port_num: 123123
+              config:
+                connection_host: dns
+                sourcetype: syslog
+                source: tcp:123123
