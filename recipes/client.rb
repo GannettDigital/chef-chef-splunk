@@ -77,5 +77,12 @@ template "#{splunk_dir}/etc/apps/SplunkUniversalForwarder/default/limits.conf" d
   notifies :restart, 'service[splunk]'
 end
 
+template "#{splunk_dir}/etc/splunk-launch.conf" do
+  source 'splunk-launch.conf.erb'
+  mode 0644
+  variables :environment => node['splunk']['environment']
+  notifies :restart, 'service[splunk]'
+end
+
 include_recipe 'chef-splunk::service'
 include_recipe 'chef-splunk::setup_auth' if node['splunk']['setup_auth']

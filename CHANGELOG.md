@@ -2,6 +2,12 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.4.2 (2015-11-04) - kbvincent
+-------------------
+
+- adding support for splunk-launch.conf, creating SPLUNK_ENVIRONMENT variable.
+
+
 v1.4.1 (2015-10-07) - akemner
 -------------------
 
