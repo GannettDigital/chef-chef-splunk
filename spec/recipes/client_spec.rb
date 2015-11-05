@@ -47,6 +47,10 @@ describe 'chef-splunk::client' do
         resource = chef_run.template('/opt/splunkforwarder/etc/system/local/inputs.conf')
         expect(resource).to notify('service[splunk]').to(:restart)
       end
+
+      it 'creates splunk-launch.conf' do
+        expect(chef_run).to create_template('/opt/splunkforwarder/etc/splunk-launch.conf')
+      end
     end
 
   context 'use attribute instead of chef search to set splunk_server variable'
@@ -86,6 +90,10 @@ describe 'chef-splunk::client' do
       it 'notifies the splunk service to restart when rendering the inputs template' do
         resource = chef_run.template('/opt/splunkforwarder/etc/system/local/inputs.conf')
         expect(resource).to notify('service[splunk]').to(:restart)
+      end
+
+      it 'creates splunk-launch.conf' do
+        expect(chef_run).to create_template('/opt/splunkforwarder/etc/splunk-launch.conf')
       end
     end
 end

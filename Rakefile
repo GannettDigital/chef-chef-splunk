@@ -37,9 +37,13 @@ namespace :integration do
     Kitchen.logger = Kitchen.default_file_logger
     @loader = Kitchen::Loader::YAML.new(project_config: './.kitchen.ec2.yml')
     config = Kitchen::Config.new(loader: @loader)
+    threads = []
     config.instances.each do |instance|
-      instance.test(:always)
+      threads << Thread.new do
+        instance.test(:always)
+      end
     end
+    threads.map(&:join)
   end
 end
 

@@ -8,6 +8,19 @@ describe 'inputs config should be configured per node attributes' do
     its(:content) { should match(/sourcetype = syslog/) }
     its(:content) { should match(/source = tcp:123123/) }
   end
+
+  describe file('/opt/splunkforwarder/etc/splunk-launch.conf') do
+    it { should be_file }
+    its(:content) { should contain("SPLUNK_HOME=/opt/splunkforwarder") }
+    its(:content) { should contain("SPLUNK_SERVER_NAME=SplunkForwarder") }
+    its(:content) { should contain("SPLUNK_WEB_NAME=splunkweb") }
+    its(:content) { should contain("MONGOC_DISABLE_SHM=1") }
+    its(:content) { should contain("SPLUNK_ENVIRONMENT=development") }
+  end
+
+  describe command('/opt/splunkforwarder/bin/splunk envvars') do
+    its(:stdout) { should contain("SPLUNK_ENVIRONMENT=development ; export SPLUNK_ENVIRONMENT") }
+  end
 end
 
 describe 'outputs config should be configured per node attributes' do

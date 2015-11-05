@@ -99,3 +99,9 @@ when 'omnios'
   default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/solaris/splunkforwarder-6.2.1-245427-solaris-10-intel.pkg.Z'
   default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.2.1/splunk/solaris/splunk-6.2.1-245427-solaris-10-intel.pkg.Z'
 end
+
+if ENV['ENVIRONMENT'].nil?
+  default['splunk']['environment'] = 'development'
+else
+  default['splunk']['environment'] = ENV['ENVIRONMENT']
+end
