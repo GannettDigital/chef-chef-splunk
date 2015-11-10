@@ -111,21 +111,17 @@ class Chef
         ::File.exist?("#{app_dir}/default/app.conf")
       end
 
-      def is_upgrade?
+      def upgrade?
         current_version_number = File.readlines("#{app_dir}/default/app.conf").grep(/version/).scan(/\d+/).join('.')
 
         if new_resource.remote_file
           new_version_number = new_resource.remote_file.scan(/\d+/).join('.')
-          unless current_version_number == new_version_number
-            true
-          end
+          true unless current_version_number == new_version_number
         elsif new_resource.cookbook_file
           new_version_number = new_resource.cookbook_file.scan(/\d+/).join('.')
-          unless current_version_number == new_version_number
-            true
-          end
+          true unless current_version_number == new_version_number
         else
-          #Does not support new_resource.remote_directory
+          # Does not support new_resource.remote_directory
           false
         end
       end

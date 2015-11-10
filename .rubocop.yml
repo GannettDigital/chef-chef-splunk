@@ -53,3 +53,7 @@ PerceivedComplexity:
   Enabled: false
 Style/Next:
   Enabled: false
+
+Metrics/AbcSize:
+  Max: 60
+
