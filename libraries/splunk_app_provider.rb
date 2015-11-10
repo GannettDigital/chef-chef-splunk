@@ -153,7 +153,6 @@ class Chef
             notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
           end
         elsif new_resource.remote_directory
-          app_package = app_dir
           remote_directory app_dir do
             source new_resource.remote_directory
             cookbook new_resource.cookbook
@@ -162,8 +161,6 @@ class Chef
         else
           raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
         end
-
-
       end
 
       def install_splunk_app
