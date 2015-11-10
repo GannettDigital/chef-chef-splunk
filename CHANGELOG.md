@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.5.0 (2015-11-10) - kbvincent
+-------------------
+
+- adding support for upgrading splunk_apps. (GDAES-2661)
+
 v1.4.2 (2015-11-04) - kbvincent
 -------------------
 

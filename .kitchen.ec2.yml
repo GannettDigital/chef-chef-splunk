@@ -10,6 +10,7 @@ driver:
   interface: private
   tags:
     OWNER: <%= ENV['AWS_OWNER_TAG'] %>
+    Name: <%= ENV['AWS_NAME_TAG'] %>
 
 provisioner:
   name: chef_zero
