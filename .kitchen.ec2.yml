@@ -10,6 +10,7 @@ driver:
   interface: private
   tags:
     OWNER: <%= ENV['AWS_OWNER_TAG'] %>
+    Name: "test-kitchen-chef-splunk"
 
 provisioner:
   name: chef_zero
