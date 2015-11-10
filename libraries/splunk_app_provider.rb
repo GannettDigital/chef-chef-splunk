@@ -36,11 +36,13 @@ class Chef
         splunk_service
         install_dependencies unless new_resource.app_dependencies.empty?
         if app_installed?
-          if is_upgrade?
+          if upgrade?
             remove_splunk_app
-            install_splunk_app
+            download_splunk_app
+            upgrade_splunk_app
           end
         else
+          download_splunk_app
           install_splunk_app
         end
 
@@ -112,7 +114,7 @@ class Chef
       end
 
       def upgrade?
-        current_version_number = File.readlines("#{app_dir}/default/app.conf").grep(/version/).scan(/\d+/).join('.')
+        current_version_number = ::File.readlines("#{app_dir}/default/app.conf").grep(/version/).to_s.scan(/\d+/).join('.')
 
         if new_resource.remote_file
           new_version_number = new_resource.remote_file.scan(/\d+/).join('.')
@@ -134,7 +136,7 @@ class Chef
         end
       end
 
-      def install_splunk_app
+      def download_splunk_app
         if new_resource.cookbook_file
           app_package = local_file(new_resource.cookbook_file)
           cookbook_file app_package do
@@ -161,10 +163,33 @@ class Chef
           raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
         end
 
-        dir = app_dir
 
+      end
+
+      def install_splunk_app
+        if new_resource.cookbook_file
+          app_package = local_file(new_resource.cookbook_file)
+        elsif new_resource.remote_file
+          app_package = local_file(new_resource.remote_file)
+        elsif new_resource.remote_directory
+          app_package = app_dir
+        end
+        dir = app_dir
         execute "splunk-install-#{new_resource.app_name}" do
           command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
+          not_if { ::File.exist?("#{dir}/default/app.conf") }
+        end
+      end
+
+      def upgrade_splunk_app
+        if new_resource.cookbook_file
+          app_package = local_file(new_resource.cookbook_file)
+        elsif new_resource.remote_file
+          app_package = local_file(new_resource.remote_file)
+        end
+        dir = app_dir
+        execute "splunk-install-#{new_resource.app_name}" do
+          command "#{splunk_cmd} install app #{app_package} -update 1 -auth #{splunk_auth(new_resource.splunk_auth)}"
           not_if { ::File.exist?("#{dir}/default/app.conf") }
         end
       end
