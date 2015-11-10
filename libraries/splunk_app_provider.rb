@@ -35,39 +35,13 @@ class Chef
       action :install do
         splunk_service
         install_dependencies unless new_resource.app_dependencies.empty?
-        unless app_installed?
-          if new_resource.cookbook_file
-            app_package = local_file(new_resource.cookbook_file)
-            cookbook_file app_package do
-              source new_resource.cookbook_file
-              cookbook new_resource.cookbook
-              checksum new_resource.checksum
-              notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
-            end
-          elsif new_resource.remote_file
-            app_package = local_file(new_resource.remote_file)
-            remote_file app_package do
-              source new_resource.remote_file
-              checksum new_resource.checksum
-              notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
-            end
-          elsif new_resource.remote_directory
-            app_package = app_dir
-            remote_directory app_dir do
-              source new_resource.remote_directory
-              cookbook new_resource.cookbook
-              notifies :restart, 'service[splunk]', :immediately
-            end
-          else
-            raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
+        if app_installed?
+          if is_upgrade?
+            remove_splunk_app
+            install_splunk_app
           end
-
-          dir = app_dir
-
-          execute "splunk-install-#{new_resource.app_name}" do
-            command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
-            not_if { ::File.exist?("#{dir}/default/app.conf") }
-          end
+        else
+          install_splunk_app
         end
 
         directory "#{app_dir}/local" do
@@ -89,11 +63,7 @@ class Chef
 
       action :remove do
         splunk_service
-        directory app_dir do
-          action :delete
-          recursive true
-          notifies :restart, 'service[splunk]'
-        end
+        remove_splunk_app
       end
 
       action :enable do
@@ -139,6 +109,68 @@ class Chef
 
       def app_installed?
         ::File.exist?("#{app_dir}/default/app.conf")
+      end
+
+      def is_upgrade?
+        current_version_number = File.readlines("#{app_dir}/default/app.conf").grep(/version/).scan(/\d+/).join('.')
+
+        if new_resource.remote_file
+          new_version_number = new_resource.remote_file.scan(/\d+/).join('.')
+          unless current_version_number == new_version_number
+            true
+          end
+        elsif new_resource.cookbook_file
+          new_version_number = new_resource.cookbook_file.scan(/\d+/).join('.')
+          unless current_version_number == new_version_number
+            true
+          end
+        else
+          #Does not support new_resource.remote_directory
+          false
+        end
+      end
+
+      def remove_splunk_app
+        directory app_dir do
+          action :delete
+          recursive true
+          notifies :restart, 'service[splunk]'
+        end
+      end
+
+      def install_splunk_app
+        if new_resource.cookbook_file
+          app_package = local_file(new_resource.cookbook_file)
+          cookbook_file app_package do
+            source new_resource.cookbook_file
+            cookbook new_resource.cookbook
+            checksum new_resource.checksum
+            notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
+          end
+        elsif new_resource.remote_file
+          app_package = local_file(new_resource.remote_file)
+          remote_file app_package do
+            source new_resource.remote_file
+            checksum new_resource.checksum
+            notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
+          end
+        elsif new_resource.remote_directory
+          app_package = app_dir
+          remote_directory app_dir do
+            source new_resource.remote_directory
+            cookbook new_resource.cookbook
+            notifies :restart, 'service[splunk]', :immediately
+          end
+        else
+          raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
+        end
+
+        dir = app_dir
+
+        execute "splunk-install-#{new_resource.app_name}" do
+          command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
+          not_if { ::File.exist?("#{dir}/default/app.conf") }
+        end
       end
 
       def splunk_service
