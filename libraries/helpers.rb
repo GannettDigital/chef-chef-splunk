@@ -26,7 +26,7 @@ end
 
 def splunk_cmd
   if node['platform_family'] == 'windows'
-    'C:\\"Program Files"\\SplunkUniversalForwarder\\bin\\splunk'
+    node['kernel']['os_info']['system_drive'] + '\\"Program Files"\\SplunkUniversalForwarder\\bin\\splunk'
   else
     "#{splunk_dir}/bin/splunk"
   end
@@ -37,8 +37,8 @@ def splunk_dir
   # Splunk Universal Forwarder can be a used as a client or a forwarding
   # (intermediary) server which installs to /opt/splunkforwarder
   if node['platform_family'] == 'windows'
-    forwarderpath = "#{ENV['SYSTEMDRIVE']}\\Program Files\\SplunkUniversalForwarder"
-    enterprisepath = "#{ENV['SYSTEMDRIVE']}\\Program Files\\SplunkUniversalForwarder"
+    forwarderpath = "#{node['kernel']['os_info']['system_drive']}\\Program Files\\SplunkUniversalForwarder"
+    enterprisepath = "#{node['kernel']['os_info']['system_drive']}\\Program Files\\SplunkUniversalForwarder"
   else
     forwarderpath = '/opt/splunkforwarder'
     enterprisepath = '/opt/splunk'

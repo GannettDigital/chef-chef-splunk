@@ -31,8 +31,6 @@ platforms:
       image_id: <%= ENV['AWS_WINDOWS2012R2_AMI_ID'] %>
       instance_type: <%= ENV['WINDOWS_INSTANCE_SIZE'] %>
       user_data: <%= ENV['WINDOWS_USER_DATA_PATH'] %>
-    transport:
-      name: winrm
 
 suites:
   - name: client-splunk_servers
