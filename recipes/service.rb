@@ -85,13 +85,7 @@ template '/etc/init.d/splunk' do
   not_if { platform_family?('windows') }
 end
 
-if node['platform_family'] == 'windows'
-  splunk_service = 'SplunkForwarder'
-else
-  splunk_service = 'splunk'
-end
-
-service splunk_service do
+service node['splunk']['service'] do
   supports :status => true, :restart => true
   action :start
 end
