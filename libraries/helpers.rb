@@ -25,15 +25,25 @@ def splunk_file(uri)
 end
 
 def splunk_cmd
-  "#{splunk_dir}/bin/splunk"
+  if node['platform_family'] == 'windows'
+    node['kernel']['os_info']['system_drive'] + '\\"Program Files"\\SplunkUniversalForwarder\\bin\\splunk'
+  else
+    "#{splunk_dir}/bin/splunk"
+  end
 end
 
 def splunk_dir
   # Splunk Enterprise (Server) will install in /opt/splunk.
   # Splunk Universal Forwarder can be a used as a client or a forwarding
   # (intermediary) server which installs to /opt/splunkforwarder
-  forwarderpath = '/opt/splunkforwarder'
-  enterprisepath = '/opt/splunk'
+  if node['platform_family'] == 'windows'
+    forwarderpath = "#{node['kernel']['os_info']['system_drive']}\\Program Files\\SplunkUniversalForwarder"
+    enterprisepath = "#{node['kernel']['os_info']['system_drive']}\\Program Files\\SplunkUniversalForwarder"
+  else
+    forwarderpath = '/opt/splunkforwarder'
+    enterprisepath = '/opt/splunk'
+  end
+
   if node['splunk']['is_intermediate'] == true
     path = forwarderpath
     return path

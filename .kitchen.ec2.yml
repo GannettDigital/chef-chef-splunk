@@ -26,6 +26,11 @@ platforms:
       user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
     transport:
       username: <%= ENV['AWS_CENTOS_USERNAME'] %>
+  - name: windows-2012r2
+    driver:
+      image_id: <%= ENV['AWS_WINDOWS2012R2_AMI_ID'] %>
+      instance_type: <%= ENV['WINDOWS_INSTANCE_SIZE'] %>
+      user_data: <%= ENV['WINDOWS_USER_DATA_PATH'] %>
 
 suites:
   - name: client-splunk_servers
