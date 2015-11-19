@@ -20,8 +20,13 @@ default['splunk']['is_server']      = false
 default['splunk']['receiver_port']  = '9997'
 default['splunk']['web_port']       = '443'
 default['splunk']['ratelimit_kilobytessec'] = '2048'
+if node['platform_family'] == 'windows'
+  default['splunk']['service'] = 'SplunkForwarder'
+else
+  default['splunk']['service'] = 'splunk'
+end
 
-default['splunk']['setup_auth'] = true
+default['splunk']['setup_auth'] = false
 default['splunk']['user'] = {
   'username' => 'splunk',
   'comment'  => 'Splunk Server',
@@ -79,6 +84,14 @@ default['splunk']['user']['home'] = '/opt/splunk' if node['splunk']['is_server']
 default['splunk']['server']['runasroot'] = true
 
 case node['platform_family']
+when 'windows'
+  if node['kernel']['machine'] == 'x86_64'
+    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.3.1/universalforwarder/windows/splunkforwarder-6.3.1-f3e41e4b37b2-x64-release.msi'
+    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.3.1/splunk/windows/splunk-6.3.1-f3e41e4b37b2-x64-release.msi'
+  else
+    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.3.1/universalforwarder/windows/splunkforwarder-6.3.1-f3e41e4b37b2-x86-release.msi'
+    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.3.1/splunk/windows/splunk-6.3.1-f3e41e4b37b2-x86-release.msi'
+  end
 when 'rhel'
   if node['kernel']['machine'] == 'x86_64'
     default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/linux/splunkforwarder-6.2.1-245427-linux-2.6-x86_64.rpm'

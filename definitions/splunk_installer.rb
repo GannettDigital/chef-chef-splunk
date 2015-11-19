@@ -51,14 +51,21 @@ define :splunk_installer, :url => nil do
     end
   end
 
+  if node['platform_family'] == 'windows'
+    pkgopts = [
+      'AGREETOLICENSE=Yes'
+    ]
+  end
+
   local_package_resource = case node['platform_family']
-                           when 'rhel'   then :rpm_package
-                           when 'debian' then :dpkg_package
-                           when 'omnios' then :solaris_package
+                           when 'rhel'    then :rpm_package
+                           when 'debian'  then :dpkg_package
+                           when 'omnios'  then :solaris_package
+                           when 'windows' then :windows_package
                            end
 
   declare_resource local_package_resource, params[:name] do
     source cached_package.gsub(/\.Z/, '')
-    options pkgopts.join(' ') if platform?('omnios')
+    options pkgopts.join(' ') unless pkgopts.nil?
   end
 end

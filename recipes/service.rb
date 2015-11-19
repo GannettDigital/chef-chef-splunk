@@ -72,7 +72,7 @@ ruby_block 'splunk_fix_file_ownership' do
       end
     end
   end
-  not_if { node['splunk']['server']['runasroot'] }
+  not_if { node['splunk']['server']['runasroot'] || platform_family?('windows') }
 end
 
 template '/etc/init.d/splunk' do
@@ -82,10 +82,16 @@ template '/etc/init.d/splunk' do
     :splunkdir => splunk_dir,
     :runasroot => node['splunk']['server']['runasroot']
   )
+  not_if { platform_family?('windows') }
 end
 
-service 'splunk' do
+if node['platform_family'] == 'windows'
+  splunk_service = 'SplunkForwarder'
+else
+  splunk_service = 'splunk'
+end
+
+service splunk_service do
   supports :status => true, :restart => true
-  provider Chef::Provider::Service::Init
   action :start
 end

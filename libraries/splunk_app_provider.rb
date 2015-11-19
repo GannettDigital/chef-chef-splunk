@@ -57,7 +57,7 @@ class Chef
             template "#{app_dir}/local/#{t}" do
               source "#{new_resource.app_name}/#{t}.erb"
               mode 00644
-              notifies :restart, 'service[splunk]'
+              notifies :restart, "service[#{node['splunk']['service']}]"
             end
           end
         end
@@ -73,7 +73,7 @@ class Chef
           splunk_service
           execute "splunk-enable-#{new_resource.app_name}" do
             command "#{splunk_cmd} enable app #{new_resource.app_name} -auth #{splunk_auth(new_resource.splunk_auth)}"
-            notifies :restart, 'service[splunk]'
+            notifies :restart, "service[#{node['splunk']['service']}]"
           end
         end
       end
@@ -84,7 +84,7 @@ class Chef
           execute "splunk-disable-#{new_resource.app_name}" do
             command "#{splunk_cmd} disable app #{new_resource.app_name} -auth #{splunk_auth(new_resource.splunk_auth)}"
             not_if { ::File.exist?("#{splunk_dir}/etc/disabled-apps/#{new_resource.app_name}") }
-            notifies :restart, 'service[splunk]'
+            notifies :restart, "service[#{node['splunk']['service']}]"
           end
         end
       end
@@ -132,7 +132,7 @@ class Chef
         directory app_dir do
           action :delete
           recursive true
-          notifies :restart, 'service[splunk]'
+          notifies :restart, "service[#{node['splunk']['service']}]"
         end
       end
 
@@ -156,7 +156,7 @@ class Chef
           remote_directory app_dir do
             source new_resource.remote_directory
             cookbook new_resource.cookbook
-            notifies :restart, 'service[splunk]', :immediately
+            notifies :restart, "service[#{node['splunk']['service']}]", :immediately
           end
         else
           raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
@@ -192,10 +192,10 @@ class Chef
       end
 
       def splunk_service
-        service 'splunk' do
+        service node['splunk']['service'] do
           action :nothing
           supports :status => true, :restart => true
-          provider Chef::Provider::Service::Init
+          provider Chef::Provider::Service::Init unless platform_family?('windows')
         end
       end
 

@@ -37,9 +37,10 @@ end
 # the resource (CHEF-3694). this is so the later notification works,
 # especially when using chefspec to run this cookbook's specs.
 begin
-  resources('service[splunk]')
+  resources("service[#{node['splunk']['service']}]")
 rescue Chef::Exceptions::ResourceNotFound
-  service 'splunk'
+  service 'splunk' unless platform_family?('windows')
+  service 'SplunkForwarder' if platform_family?('windows')
 end
 
 directory "#{splunk_dir}/etc/system/local" do
@@ -59,14 +60,14 @@ template "#{splunk_dir}/etc/system/local/outputs.conf" do
     :indexers_group2_splunk_servers => node['splunk']['indexers_group2']['splunk_servers'],
     :indexers_group2_outputs_conf => node['splunk']['indexers_group2']['outputs_conf']
   )
-  notifies :restart, 'service[splunk]'
+  notifies :restart, "service[#{node['splunk']['service']}]"
 end
 
 template "#{splunk_dir}/etc/system/local/inputs.conf" do
   source 'inputs.conf.erb'
   mode 0644
   variables :inputs_conf => node['splunk']['inputs_conf']
-  notifies :restart, 'service[splunk]'
+  notifies :restart, "service[#{node['splunk']['service']}]"
   not_if { node['splunk']['inputs_conf'].nil? || node['splunk']['inputs_conf']['host'].empty? }
 end
 
@@ -74,14 +75,17 @@ template "#{splunk_dir}/etc/apps/SplunkUniversalForwarder/default/limits.conf" d
   source 'limits.conf.erb'
   mode 0644
   variables :ratelimit_kbps => node['splunk']['ratelimit_kilobytessec']
-  notifies :restart, 'service[splunk]'
+  notifies :restart, "service[#{node['splunk']['service']}]"
 end
 
 template "#{splunk_dir}/etc/splunk-launch.conf" do
   source 'splunk-launch.conf.erb'
   mode 0644
-  variables :environment => node['splunk']['environment']
-  notifies :restart, 'service[splunk]'
+  variables(
+    :environment => node['splunk']['environment'],
+    :splunkhome =>  splunk_dir
+  )
+  notifies :restart, "service[#{node['splunk']['service']}]"
 end
 
 include_recipe 'chef-splunk::service'

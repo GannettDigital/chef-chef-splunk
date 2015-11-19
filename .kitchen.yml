@@ -1,13 +1,16 @@
 driver:
   name: vagrant
   customize:
-    memory: 512
+    memory: 2046
 
 provisioner:
   name: chef_zero
   data_bags_path: "test/fixtures/data_bags"
 
 platforms:
+  - name: windows-2012r2
+    driver_config:
+      box: opentable/win-2012r2-standard-amd64-nocm
   - name: centos-6.7
   - name: centos-7.1
   - name: debian-7.8
@@ -66,6 +69,8 @@ suites:
         accept_license: true
         ssl_options:
           enable_ssl: true
+    excludes:
+      - windows-2012r2
 
   - name: server-runas-splunk
     run_list:
@@ -80,6 +85,8 @@ suites:
         ssl_options:
           enable_ssl: true
         web_port: 8443
+    excludes:
+      - windows-2012r2
 
   - name: disabled
     run_list:
@@ -87,6 +94,8 @@ suites:
     attributes:
       splunk:
         disabled: true
+    excludes:
+      - windows-2012r2
 
   - name: upgrade_client
     run_list:
@@ -97,6 +106,8 @@ suites:
       splunk:
         accept_license: true
         upgrade_enabled: true
+    excludes:
+      - windows-2012r2
 
   - name: upgrade_server
     run_list:
@@ -108,6 +119,8 @@ suites:
         accept_license: true
         upgrade_enabled: true
         is_server: true
+    excludes:
+      - windows-2012r2
 
   - name: server_lwrps
     run_list:
@@ -120,6 +133,8 @@ suites:
           runasroot: false
         accept_license: true
         is_server: true
+    excludes:
+      - windows-2012r2
 
   - name: client_lwrps
     run_list:
