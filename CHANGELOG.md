@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.6.1 (2015-11-24) - akemner
+-------------------
+
+- update readme.
+
 v1.6.0 (2015-11-19) - kbvincent
 -------------------
 
