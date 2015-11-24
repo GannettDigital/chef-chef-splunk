@@ -259,7 +259,7 @@ It will also search(chef search) the Chef Server for a Splunk Enterprise (server
 node with `splunk_is_server:true` in the same `chef_environment` and
 write out `etc/system/local/outputs.conf` with the server's IP and the
 `receiver_port` attribute in the Splunk install directory
-(`/opt/splunkforwarder`). If you did use splunk to configure setup a Splunk Enterprise (server), then you can populate ['splunk']['indexers_group1']['splunk_servers'] with the IP address(es) and that will write out `etc/system/local/outputs.conf` with those values.
+(`/opt/splunkforwarder`). If you did NOT use splunk to configure setup a Splunk Enterprise (server), then you can populate ['splunk']['indexers_group1']['splunk_servers'] with the IP address(es) and that will write out `etc/system/local/outputs.conf` with those values.
 
 Setting ['splunk']['indexers_group1']['outputs_conf'] with key value pairs
 updates the outputs.conf server configuration with those key value pairs.
