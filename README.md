@@ -1,9 +1,5 @@
 splunk Cookbook
 ===============
-
-[![Build Status](https://travis-ci.org/chef-cookbooks/chef-splunk.svg?branch=master)](https://travis-ci.org/chef-cookbooks/chef-splunk)
-[![Cookbook Version](https://img.shields.io/cookbook/v/chef-splunk.svg)](https://supermarket.chef.io/cookbooks/chef-splunk)
-
 This cookbook manages a Splunk Universal Forwarder (client) or a
 Splunk Enterprise (server) installation, including a Splunk clustered
 environment.
@@ -33,6 +29,7 @@ without modification.
 * Ubuntu 12.04, 14.04
 * CentOS 6
 * OmniOS r151008
+* Windows2012r2(client.rb only)
 
 ### Cookbooks
 
@@ -252,35 +249,24 @@ recipe will be a Splunk Universal Forwarder (client).
 
 ### client
 
-This recipe encapsulates a completely configured "client" - a Splunk
-Universal Forwarder configured to talk to a node that is the splunk
-server (with node['splunk']['is_server'] true). The recipes can be
+This recipe configures a "client" - a Splunk
+Universal Forwarder. The recipes can be
 used on their own composed in a wrapper cookbook or role. This recipe
 will include the `user`, `install_forwarder`, `service`, and
 `setup_auth` recipes.
 
-It will also search a Chef Server for a Splunk Enterprise (server)
+It will also search(chef search) the Chef Server for a Splunk Enterprise (server)
 node with `splunk_is_server:true` in the same `chef_environment` and
 write out `etc/system/local/outputs.conf` with the server's IP and the
 `receiver_port` attribute in the Splunk install directory
-(`/opt/splunkforwarder`).
+(`/opt/splunkforwarder`). If you did use splunk to configure setup a Splunk Enterprise (server), then you can populate ['splunk']['indexers_group1']['splunk_servers'] with the IP address(es) and that will write out `etc/system/local/outputs.conf` with those values.
 
-Setting node['splunk']['tcpout_server_config_map'] with key value pairs
+Setting ['splunk']['indexers_group1']['outputs_conf'] with key value pairs
 updates the outputs.conf server configuration with those key value pairs.
 These key value pairs can be used to setup SSL encryption on messages
 forwarded through this client:
 
 ```
-# Note that the ssl CA and certs must exist on the server.
-node['splunk']['tcpout_server_config_map'] = {
-  'sslCommonNameToCheck' => 'sslCommonName',
-  'sslCertPath' => '$SPLUNK_HOME/etc/certs/cert.pem',
-  'sslPassword' => 'password'
-  'sslRootCAPath' => '$SPLUNK_HOME/etc/certs/cacert.pem'
-  'sslVerifyServerCert' => false
-}
-```
-
 The inputs.conf file can also be managed through this recipe if you want to
 setup a splunk forwarder just set the  default host:
 
@@ -366,6 +352,8 @@ provider, which operates by using the `/etc/init.d/splunk` script for
 start, stop, restart, etc commands.
 
 ## setup_auth
+
+setup_auth is disabled by default. to turn it on override `node['splunk']['setup_auth']` to true.
 
 This recipe loads an encrypted data bag with the Splunk user
 credentials as an `-auth` string, '`user:password`', using the
