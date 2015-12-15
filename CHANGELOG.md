@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.6.2 (2015-11-24) - akemner
+-------------------
+
+- fix spec_helper PATH and add in gd-test-helper for integration testing usage
+
 v1.6.1 (2015-11-24) - akemner
 -------------------
 
