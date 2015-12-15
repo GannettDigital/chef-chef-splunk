@@ -28,6 +28,7 @@ platforms:
 suites:
   - name: client
     run_list:
+      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
       - recipe[test::default]
     attributes:
@@ -37,6 +38,7 @@ suites:
 
   - name: client-inputs-outputs
     run_list:
+      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
       - recipe[test::default]
     attributes:
@@ -99,6 +101,7 @@ suites:
 
   - name: upgrade_client
     run_list:
+      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
       - recipe[chef-splunk::upgrade]
     attributes:
@@ -138,6 +141,7 @@ suites:
 
   - name: client_lwrps
     run_list:
+      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
       - recipe[test::default]
     attributes:
@@ -150,6 +154,7 @@ suites:
 
   - name: client-splunk_servers
     run_list:
+      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
       - recipe[test::default]
     attributes:
