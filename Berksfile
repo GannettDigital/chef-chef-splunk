@@ -4,5 +4,6 @@ metadata
 
 group :integration do
   cookbook 'test', :path => './test/fixtures/cookbooks/test'
-  cookbook 'gd-test-helper'
+  cookbook 'kitchen-test-helper'
+  cookbook 'apt'
 end

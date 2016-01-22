@@ -37,7 +37,6 @@ class Chef
         install_dependencies unless new_resource.app_dependencies.empty?
         if app_installed?
           if upgrade?
-            remove_splunk_app
             download_splunk_app
             upgrade_splunk_app
           end
@@ -143,14 +142,12 @@ class Chef
             source new_resource.cookbook_file
             cookbook new_resource.cookbook
             checksum new_resource.checksum
-            notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
           end
         elsif new_resource.remote_file
           app_package = local_file(new_resource.remote_file)
           remote_file app_package do
             source new_resource.remote_file
             checksum new_resource.checksum
-            notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
           end
         elsif new_resource.remote_directory
           remote_directory app_dir do
@@ -168,8 +165,6 @@ class Chef
           app_package = local_file(new_resource.cookbook_file)
         elsif new_resource.remote_file
           app_package = local_file(new_resource.remote_file)
-        elsif new_resource.remote_directory
-          app_package = app_dir
         end
         dir = app_dir
         execute "splunk-install-#{new_resource.app_name}" do
@@ -187,7 +182,6 @@ class Chef
         dir = app_dir
         execute "splunk-install-#{new_resource.app_name}" do
           command "#{splunk_cmd} install app #{app_package} -update 1 -auth #{splunk_auth(new_resource.splunk_auth)}"
-          not_if { ::File.exist?("#{dir}/default/app.conf") }
         end
       end
 

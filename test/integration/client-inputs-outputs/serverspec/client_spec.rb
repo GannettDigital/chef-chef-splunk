@@ -8,6 +8,25 @@ else
   splunk_command = "#{splunk_base_dir}/bin/splunk"
 end
 
+describe file('#{splunk_base_dir}/bin/') do
+  it { should exist }
+  it { should be_a_directory }
+end
+
+describe file('#{splunk_base_dir}/bin/splunk') do
+  it { should exist }
+  it { should be_executable }
+end
+
+describe service('splunk') do
+  it { should be_running }
+  it { should be_enabled }
+end
+
+describe process('splunkd') do
+  its(:user) { should match 'root' }
+end
+
 describe 'inputs config should be configured per node attributes' do
   describe file("#{splunk_base_dir}/etc/system/local/inputs.conf") do
     it { should be_file }
@@ -15,19 +34,6 @@ describe 'inputs config should be configured per node attributes' do
     its(:content) { should match(/connection_host = dns/) }
     its(:content) { should match(/sourcetype = syslog/) }
     its(:content) { should match(/source = tcp:123123/) }
-  end
-
-  describe file("#{splunk_base_dir}/etc/splunk-launch.conf") do
-    it { should be_file }
-    its(:content) { should contain("SPLUNK_HOME=#{splunk_base_dir}") }
-    its(:content) { should contain("SPLUNK_SERVER_NAME=SplunkForwarder") }
-    its(:content) { should contain("SPLUNK_WEB_NAME=splunkweb") }
-    its(:content) { should contain("MONGOC_DISABLE_SHM=1") }
-    its(:content) { should contain("SPLUNK_ENVIRONMENT=development") }
-  end
-
-  describe command("#{splunk_command} envvars") do
-    its(:stdout) { should contain("SPLUNK_ENVIRONMENT=development") }
   end
 end
 

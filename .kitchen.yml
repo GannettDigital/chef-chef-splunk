@@ -1,7 +1,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 2046
+    memory: 512
 
 provisioner:
   name: chef_zero
@@ -9,6 +9,8 @@ provisioner:
 
 platforms:
   - name: windows-2012r2
+    customize:
+      memory: 2048
     driver_config:
       box: opentable/win-2012r2-standard-amd64-nocm
   - name: centos-6.7
@@ -28,9 +30,9 @@ platforms:
 suites:
   - name: client
     run_list:
-      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
-      - recipe[test::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
     attributes:
       dev_mode: true
       splunk:
@@ -38,9 +40,9 @@ suites:
 
   - name: client-inputs-outputs
     run_list:
-      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
-      - recipe[test::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
     attributes:
       dev_mode: true
       splunk:
@@ -48,6 +50,7 @@ suites:
         outputs_conf:
           sslCommonNameToCheck: sslCommonName
           sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+          sslPassword: password
           sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
           sslVerifyServerCert: false
         inputs_conf:
@@ -101,7 +104,6 @@ suites:
 
   - name: upgrade_client
     run_list:
-      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
       - recipe[chef-splunk::upgrade]
     attributes:
@@ -128,7 +130,8 @@ suites:
   - name: server_lwrps
     run_list:
       - recipe[chef-splunk::default]
-      - recipe[test::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
     attributes:
       dev_mode: true
       splunk:
@@ -141,9 +144,9 @@ suites:
 
   - name: client_lwrps
     run_list:
-      - recipe[gd-test-helper]
       - recipe[chef-splunk::default]
-      - recipe[test::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
     attributes:
       dev_mode: true
       splunk:
@@ -154,9 +157,10 @@ suites:
 
   - name: client-splunk_servers
     run_list:
-      - recipe[gd-test-helper]
+      - recipe[kitchen-test-helper]
       - recipe[chef-splunk::default]
-      - recipe[test::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
     attributes:
       dev_mode: true
       splunk:

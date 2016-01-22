@@ -86,19 +86,19 @@ default['splunk']['server']['runasroot'] = true
 case node['platform_family']
 when 'windows'
   if node['kernel']['machine'] == 'x86_64'
-    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.3.1/universalforwarder/windows/splunkforwarder-6.3.1-f3e41e4b37b2-x64-release.msi'
-    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.3.1/splunk/windows/splunk-6.3.1-f3e41e4b37b2-x64-release.msi'
+    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/windows/splunkforwarder-6.2.1-245427-x64-release.msi'
+    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.2.1/splunk/windows/splunk-6.2.1-245427-x64-release.msi'
   else
-    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.3.1/universalforwarder/windows/splunkforwarder-6.3.1-f3e41e4b37b2-x86-release.msi'
-    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.3.1/splunk/windows/splunk-6.3.1-f3e41e4b37b2-x86-release.msi'
+    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/windows/splunkforwarder-6.2.1-245427-x86-release.msi'
+    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.2.1/splunk/windows/splunk-6.2.1-245427-x86-release.msi'
   end
-when 'rhel'
+when 'rhel', 'fedora'
   if node['kernel']['machine'] == 'x86_64'
-    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.3.1/universalforwarder/linux/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-x86_64.rpm'
-    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.3.1/splunk/linux/splunk-6.3.1-f3e41e4b37b2-linux-2.6-x86_64.rpm'
+    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/linux/splunkforwarder-6.2.1-245427-linux-2.6-x86_64.rpm'
+    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.2.1/splunk/linux/splunk-6.2.1-245427-linux-2.6-x86_64.rpm'
   else
-    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.3.1/universalforwarder/linux/splunkforwarder-6.3.1-f3e41e4b37b2.i386.rpm'
-    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.3.1/splunk/linux/splunk-6.3.1-f3e41e4b37b2.i386.rpm'
+    default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/linux/splunkforwarder-6.2.1-245427.i386.rpm'
+    default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.2.1/splunk/linux/splunk-6.2.1-245427.i386.rpm'
   end
 when 'debian'
   if node['kernel']['machine'] == 'x86_64'
@@ -111,10 +111,4 @@ when 'debian'
 when 'omnios'
   default['splunk']['forwarder']['url'] = 'http://download.splunk.com/releases/6.2.1/universalforwarder/solaris/splunkforwarder-6.2.1-245427-solaris-10-intel.pkg.Z'
   default['splunk']['server']['url'] = 'http://download.splunk.com/releases/6.2.1/splunk/solaris/splunk-6.2.1-245427-solaris-10-intel.pkg.Z'
-end
-
-if ENV['ENVIRONMENT'].nil?
-  default['splunk']['environment'] = 'development'
-else
-  default['splunk']['environment'] = ENV['ENVIRONMENT']
 end
