@@ -30,7 +30,7 @@ Style/SignalException:
   Enabled: false
 
 # We enjoy parameters lining up for visual comprehension
-Style/SingleSpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Enabled: false
 
 # Only enforce a wordlist for 5 or longer lists.
@@ -56,4 +56,3 @@ Style/Next:
 
 Metrics/AbcSize:
   Max: 60
-
