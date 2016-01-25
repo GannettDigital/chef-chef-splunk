@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.6.3 (2016-01-25) - akemner
+-------------------
+
+- fix splunk_app update bug and add more testing. restructure integration test suites to better align with community cookbook suites that get tested in CI
+
 v1.6.2 (2015-11-24) - akemner
 -------------------
 
