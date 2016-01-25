@@ -45,7 +45,7 @@ class Chef
           install_splunk_app
         end
 
-        directory "#{app_dir}" do
+        directory app_dir do
           recursive true
           mode 00755
           owner node['splunk']['user']['username'] unless node['splunk']['server']['runasroot']
@@ -166,10 +166,9 @@ class Chef
         elsif new_resource.remote_file
           app_package = local_file(new_resource.remote_file)
         end
-        dir = app_dir
         execute "splunk-install-#{new_resource.app_name}" do
           command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
-          not_if { ::File.exist?("#{dir}/default/app.conf") }
+          not_if { ::File.exist?("#{app_dir}/default/app.conf") }
         end
       end
 
@@ -179,7 +178,6 @@ class Chef
         elsif new_resource.remote_file
           app_package = local_file(new_resource.remote_file)
         end
-        dir = app_dir
         execute "splunk-install-#{new_resource.app_name}" do
           command "#{splunk_cmd} install app #{app_package} -update 1 -auth #{splunk_auth(new_resource.splunk_auth)}"
         end
