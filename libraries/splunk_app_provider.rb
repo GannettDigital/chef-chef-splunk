@@ -45,7 +45,7 @@ class Chef
           install_splunk_app
         end
 
-        directory "#{app_dir}/local" do
+        directory "#{app_dir}" do
           recursive true
           mode 00755
           owner node['splunk']['user']['username'] unless node['splunk']['server']['runasroot']

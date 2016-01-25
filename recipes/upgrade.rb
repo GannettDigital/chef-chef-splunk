@@ -26,9 +26,8 @@ unless node['splunk']['upgrade_enabled']
 end
 
 service 'splunk_stop' do
-  service_name 'splunk'
+  service_name "service[#{node['splunk']['service']}]"
   supports :status => true
-  provider Chef::Provider::Service::Init
   action :stop
 end
 

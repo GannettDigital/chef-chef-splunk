@@ -26,7 +26,7 @@ else
   default['splunk']['service'] = 'splunk'
 end
 
-default['splunk']['setup_auth'] = false
+default['splunk']['setup_auth'] = true
 default['splunk']['user'] = {
   'username' => 'splunk',
   'comment'  => 'Splunk Server',
