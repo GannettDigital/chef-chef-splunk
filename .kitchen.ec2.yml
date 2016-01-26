@@ -14,14 +14,14 @@ driver:
 
 provisioner:
   name: chef_zero
-  transport:
-    ssh_key: <%= ENV['SSH_KEY_PATH'] %><%= ENV['AWS_SSH_KEY'] %>.pem
   attributes:
     fake_databags:
       - data_bag: 'vault'
         content:
           id: 'splunk__default'
           auth: 'admin:notarealpassword'
+transport:
+  ssh_key: <%= ENV['SSH_KEY_PATH'] %><%= ENV['AWS_SSH_KEY'] %>.pem
 
 platforms:
   - name: centos-6.7
