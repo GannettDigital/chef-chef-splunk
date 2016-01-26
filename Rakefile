@@ -1,3 +1,5 @@
+gem 'foodcritic', '5.0.0'
+
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'foodcritic'
