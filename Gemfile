@@ -17,6 +17,10 @@ group :unit do
   gem 'chefspec',   '~> 4.4'
 end
 
+group :kitchen_windows do
+  gem 'winrm-transport'
+end
+
 group :kitchen_common do
   gem 'test-kitchen', '~> 1.4'
 end
