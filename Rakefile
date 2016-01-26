@@ -50,4 +50,4 @@ end
 # Default
 task default: ['style', 'spec', 'integration:vagrant']
 task ec2: ['style', 'spec', 'integration:ec2']
-task test: ['style', 'spec']
+task test: %w(style spec)

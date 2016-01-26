@@ -53,12 +53,12 @@ template "#{splunk_dir}/etc/system/local/outputs.conf" do
   source 'outputs.conf.erb'
   mode 0644
   variables(
-    :indexers_group1_name => node['splunk']['indexers_group1']['name'],
-    :indexers_group1_splunk_servers => node['splunk']['indexers_group1']['splunk_servers'],
-    :indexers_group1_outputs_conf => node['splunk']['indexers_group1']['outputs_conf'],
-    :indexers_group2_name => node['splunk']['indexers_group2']['name'],
-    :indexers_group2_splunk_servers => node['splunk']['indexers_group2']['splunk_servers'],
-    :indexers_group2_outputs_conf => node['splunk']['indexers_group2']['outputs_conf']
+    indexers_group1_name: node['splunk']['indexers_group1']['name'],
+    indexers_group1_splunk_servers: node['splunk']['indexers_group1']['splunk_servers'],
+    indexers_group1_outputs_conf: node['splunk']['indexers_group1']['outputs_conf'],
+    indexers_group2_name: node['splunk']['indexers_group2']['name'],
+    indexers_group2_splunk_servers: node['splunk']['indexers_group2']['splunk_servers'],
+    indexers_group2_outputs_conf: node['splunk']['indexers_group2']['outputs_conf']
   )
   notifies :restart, "service[#{node['splunk']['service']}]"
 end
@@ -66,7 +66,7 @@ end
 template "#{splunk_dir}/etc/system/local/inputs.conf" do
   source 'inputs.conf.erb'
   mode 0644
-  variables :inputs_conf => node['splunk']['inputs_conf']
+  variables inputs_conf: node['splunk']['inputs_conf']
   notifies :restart, "service[#{node['splunk']['service']}]"
   not_if { node['splunk']['inputs_conf'].nil? || node['splunk']['inputs_conf']['host'].empty? }
 end
@@ -74,7 +74,7 @@ end
 template "#{splunk_dir}/etc/apps/SplunkUniversalForwarder/default/limits.conf" do
   source 'limits.conf.erb'
   mode 0644
-  variables :ratelimit_kbps => node['splunk']['ratelimit_kilobytessec']
+  variables ratelimit_kbps: node['splunk']['ratelimit_kilobytessec']
   notifies :restart, "service[#{node['splunk']['service']}]"
 end
 

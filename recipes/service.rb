@@ -65,10 +65,9 @@ ruby_block 'splunk_fix_file_ownership' do
     checkowner << "#{splunk_dir}/etc/myinstall/splunkd.xml"
     checkowner << "#{splunk_dir}/"
     checkowner.each do |dir|
-      if File.exist? dir
-        if File.stat(dir).uid.eql?(0)
-          FileUtils.chown_R(myuser, myuser, splunk_dir)
-        end
+      next unless File.exist? dir
+      if File.stat(dir).uid.eql?(0)
+        FileUtils.chown_R(myuser, myuser, splunk_dir)
       end
     end
   end
@@ -79,13 +78,13 @@ template '/etc/init.d/splunk' do
   source 'splunk-init.erb'
   mode 0700
   variables(
-    :splunkdir => splunk_dir,
-    :runasroot => node['splunk']['server']['runasroot']
+    splunkdir: splunk_dir,
+    runasroot: node['splunk']['server']['runasroot']
   )
   not_if { platform_family?('windows') }
 end
 
 service node['splunk']['service'] do
-  supports :status => true, :restart => true
+  supports status: true, restart: true
   action :start
 end

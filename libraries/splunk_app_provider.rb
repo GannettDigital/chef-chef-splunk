@@ -24,7 +24,7 @@ include Chef::Mixin::ShellOut
 class Chef
   class Provider
     class SplunkApp < Chef::Provider::LWRPBase
-      provides :splunk_app
+      provides :splunk_app if respond_to?(:provides)
 
       use_inline_resources
 
@@ -156,7 +156,7 @@ class Chef
             notifies :restart, "service[#{node['splunk']['service']}]", :immediately
           end
         else
-          raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
+          fail("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
         end
       end
 
@@ -166,9 +166,10 @@ class Chef
         elsif new_resource.remote_file
           app_package = local_file(new_resource.remote_file)
         end
+        dir = app_dir
         execute "splunk-install-#{new_resource.app_name}" do
           command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
-          not_if { ::File.exist?("#{app_dir}/default/app.conf") }
+          not_if { ::File.exist?("#{dir}/default/app.conf") }
         end
       end
 
@@ -186,7 +187,7 @@ class Chef
       def splunk_service
         service node['splunk']['service'] do
           action :nothing
-          supports :status => true, :restart => true
+          supports status: true, restart: true
           provider Chef::Provider::Service::Init unless platform_family?('windows')
         end
       end
