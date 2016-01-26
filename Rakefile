@@ -49,4 +49,4 @@ end
 task default: ['style', 'spec', 'integration:vagrant']
 task ec2: ['style', 'spec', 'integration:ec2']
 task ec2_singlethread: ['style', 'spec', 'integration:ec2_singlethread']
-task test: ['style', 'spec']
+task test: %w(style spec)
