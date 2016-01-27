@@ -44,16 +44,14 @@ def splunk_dir
     enterprisepath = '/opt/splunk'
   end
 
-  if node['splunk']['is_intermediate'] == true
-    path = forwarderpath
-    return path
-  elsif node['splunk']['is_server'] == true
-    path = enterprisepath
-    return path
-  else
-    path = forwarderpath
-    return path
-  end
+  path = if node['splunk']['is_intermediate'] == true
+           forwarderpath
+         elsif node['splunk']['is_server'] == true
+           enterprisepath
+         else
+           forwarderpath
+         end
+  path
 end
 
 def splunk_auth(auth)

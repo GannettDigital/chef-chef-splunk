@@ -1,7 +1,10 @@
+gem 'foodcritic', '5.0.0'
+gem 'test-kitchen', '1.4.2'
+
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'foodcritic'
-require 'kitchen'
+require 'kitchen/cli'
 
 # Style tests. Rubocop and Foodcritic
 namespace :style do
@@ -34,20 +37,17 @@ namespace :integration do
     end
   end
   task :ec2 do
-    Kitchen.logger = Kitchen.default_file_logger
-    @loader = Kitchen::Loader::YAML.new(project_config: './.kitchen.ec2.yml')
-    config = Kitchen::Config.new(loader: @loader)
-    threads = []
-    config.instances.each do |instance|
-      threads << Thread.new do
-        instance.test(:always)
-      end
-    end
-    threads.map(&:join)
+    ENV['KITCHEN_YAML'] = './.kitchen.ec2.yml'
+    Kitchen::CLI.new([], concurrency: 5, destroy: 'always').test
+  end
+  task :ec2_singlethread do
+    ENV['KITCHEN_YAML'] = './.kitchen.ec2.yml'
+    Kitchen::CLI.new([], destroy: 'always').test
   end
 end
 
 # Default
 task default: ['style', 'spec', 'integration:vagrant']
 task ec2: ['style', 'spec', 'integration:ec2']
-task test: ['style', 'spec']
+task ec2_singlethread: ['style', 'spec', 'integration:ec2_singlethread']
+task test: %w(style spec)

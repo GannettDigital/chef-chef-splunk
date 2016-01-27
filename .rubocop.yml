@@ -1,41 +1,8 @@
 AllCops:
   Exclude:
-    - 'test/integration/**/*'
-    - 'spec/**/*' # ignore spec tests for now
-    - 'vendor/**/*' # ignore non-local files
+    - vendor/**/*
     - Guardfile
-
-# We like longer lines
-Metrics/LineLength:
-  Max: 160
-
-# TODO: add encoding headers
-Style/Encoding:
-  Enabled: false
-
-# Our code has names with dashes.
-Style/FileName:
-  Enabled: false
-
-# We still have HashRockets in a lot of places, ignore them.
-Style/HashSyntax:
-  Enabled: false
-
-# Increase readability of large numbers after 5 digits (ports) only.
-Style/NumericLiterals:
-  MinDigits: 6
-
-# TODO: see if this should be replaced by Chef::Application.fatal!
-Style/SignalException:
-  Enabled: false
-
-# We enjoy parameters lining up for visual comprehension
-Style/SingleSpaceBeforeFirstArg:
-  Enabled: false
-
-# Only enforce a wordlist for 5 or longer lists.
-Style/WordArray:
-  MinSize: 5
+    - test/**/*
 
 AlignParameters:
   Enabled: false
@@ -45,15 +12,21 @@ CyclomaticComplexity:
   Enabled: false
 Documentation:
   Enabled: false
-
+Encoding:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+LineLength:
+  Enabled: false
 MethodLength:
   Enabled: false
-
+Metrics/AbcSize:
+  Enabled: false
 PerceivedComplexity:
   Enabled: false
-Style/Next:
+SpaceBeforeFirstArg:
   Enabled: false
-
-Metrics/AbcSize:
-  Max: 60
-
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/FileName:
+  Enabled: false

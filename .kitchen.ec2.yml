@@ -14,18 +14,48 @@ driver:
 
 provisioner:
   name: chef_zero
-  data_bags_path: "test/fixtures/data_bags"
+  attributes:
+    fake_databags:
+      - data_bag: 'vault'
+        content:
+          id: 'splunk__default'
+          auth: 'admin:notarealpassword'
 transport:
   ssh_key: <%= ENV['SSH_KEY_PATH'] %><%= ENV['AWS_SSH_KEY'] %>.pem
 
 platforms:
-  - name: centos
+  - name: centos-6.7
     driver:
-      image_id: <%= ENV['AWS_CENTOS_AMI_ID'] %>
+      image_id: <%= ENV['AWS_CENTOS6_AMI_ID'] %>
       instance_type: <%= ENV['LINUX_INSTANCE_SIZE'] %>
       user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
     transport:
-      username: <%= ENV['AWS_CENTOS_USERNAME'] %>
+      username: <%= ENV['AWS_CENTOS6_USERNAME'] %>
+  - name: centos-7.1
+    driver:
+      image_id: <%= ENV['AWS_CENTOS7_AMI_ID'] %>
+      instance_type: <%= ENV['LINUX_INSTANCE_SIZE'] %>
+      user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
+    transport:
+      username: <%= ENV['AWS_CENTOS7_USERNAME'] %>
+  - name: ubuntu-12.04
+    driver:
+      image_id: <%= ENV['AWS_UBUNTU12_AMI_ID'] %>
+      instance_type: <%= ENV['LINUX_INSTANCE_SIZE'] %>
+      user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
+    transport:
+      username: <%= ENV['AWS_UBUNTU12_USERNAME'] %>
+    run_list:
+      - recipe[apt::default]
+  - name: ubuntu-14.04
+    driver:
+      image_id: <%= ENV['AWS_UBUNTU14_AMI_ID'] %>
+      instance_type: <%= ENV['LINUX_INSTANCE_SIZE'] %>
+      user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
+    transport:
+      username: <%= ENV['AWS_UBUNTU14_USERNAME'] %>
+    run_list:
+      - recipe[apt::default]
   - name: windows-2012r2
     driver:
       image_id: <%= ENV['AWS_WINDOWS2012R2_AMI_ID'] %>
@@ -33,20 +63,135 @@ platforms:
       user_data: <%= ENV['WINDOWS_USER_DATA_PATH'] %>
 
 suites:
-  - name: client-splunk_servers
+  - name: server-runas-splunk
     run_list:
-      - recipe[gd-test-helper]
+      - recipe[kitchen-test-helper]
       - recipe[chef-splunk::default]
-      - recipe[test::default]
     attributes:
       dev_mode: true
       splunk:
+        server:
+          runasroot: false
+        is_server: true
+        accept_license: true
+        ssl_options:
+          enable_ssl: true
+        web_port: 8443
+    excludes:
+      - windows-2012r2
+      - centos-6.7
+      - centos-7.1
+      - ubuntu-12.04
+      - ubuntu-14.04
+      - debian-7.8
+      - debian-8.1
+      - fedora-21
+      - omnios-r151006c
+
+  - name: disabled
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[chef-splunk::default]
+    attributes:
+      splunk:
+        disabled: true
+    excludes:
+      - windows-2012r2
+      - centos-6.7
+      - centos-7.1
+      - ubuntu-12.04
+      - ubuntu-14.04
+      - debian-7.8
+      - debian-8.1
+      - fedora-21
+      - omnios-r151006c
+
+  - name: upgrade_client
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[chef-splunk::default]
+      - recipe[chef-splunk::upgrade]
+    attributes:
+      dev_mode: true
+      splunk:
+        accept_license: true
+        upgrade_enabled: true
+    excludes:
+      - windows-2012r2
+      - centos-6.7
+      - centos-7.1
+      - ubuntu-12.04
+      - ubuntu-14.04
+      - debian-7.8
+      - debian-8.1
+      - fedora-21
+      - omnios-r151006c
+
+
+  - name: upgrade_server
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[chef-splunk::default]
+      - recipe[chef-splunk::upgrade]
+    attributes:
+      dev_mode: true
+      splunk:
+        accept_license: true
+        upgrade_enabled: true
+        is_server: true
+    excludes:
+      - windows-2012r2
+      - centos-6.7
+      - centos-7.1
+      - ubuntu-12.04
+      - ubuntu-14.04
+      - debian-7.8
+      - debian-8.1
+      - fedora-21
+      - omnios-r151006c
+
+  - name: server
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[chef-splunk::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
+    attributes:
+      dev_mode: true
+      splunk:
+        server:
+        accept_license: true
+        is_server: true
+    excludes:
+      - windows-2012r2
+      - centos-6.7
+      - centos-7.1
+      - ubuntu-12.04
+      - ubuntu-14.04
+      - debian-7.8
+      - debian-8.1
+      - fedora-21
+      - omnios-r151006c
+
+
+  - name: client
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[chef-splunk::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
+    attributes:
+      dev_mode: true
+      splunk:
+        server:
+          runasroot: false
         accept_license: true
         indexers_group1:
           splunk_servers: '192.168.10.1:9997, 192.168.10.2:9997, 192.168.10.3:9997'
           outputs_conf:
             sslCommonNameToCheck: sslCommonName
             sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
             sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
             sslVerifyServerCert: false
         indexers_group2:
@@ -54,6 +199,7 @@ suites:
           outputs_conf:
             sslCommonNameToCheck: sslCommonName
             sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
             sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
             sslVerifyServerCert: false
         inputs_conf:
@@ -64,3 +210,49 @@ suites:
                 connection_host: dns
                 sourcetype: syslog
                 source: tcp:123123
+    excludes:
+      - windows-2012r2
+      - debian-7.8
+      - debian-8.1
+      - fedora-21
+      - omnios-r151006c
+
+  - name: windows_client
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[chef-splunk::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
+    attributes:
+      dev_mode: true
+      splunk:
+        setup_auth: false
+        server:
+          runasroot: false
+        accept_license: true
+        indexers_group1:
+          splunk_servers: '192.168.10.1:9997, 192.168.10.2:9997, 192.168.10.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        indexers_group2:
+          splunk_servers: '192.168.20.1:9997, 192.168.20.2:9997, 192.168.20.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        inputs_conf:
+          host: localhost
+          ports:
+            - port_num: 123123
+              config:
+                connection_host: dns
+                sourcetype: syslog
+                source: tcp:123123
+    includes:
+      - windows-2012r2
