@@ -1,4 +1,5 @@
 gem 'foodcritic', '5.0.0'
+gem 'test-kitchen', '1.4.2'
 
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
