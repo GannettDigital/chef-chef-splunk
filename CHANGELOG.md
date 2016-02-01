@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.6.4 (2016-02-01) - akemner
+-------------------
+
+- remove download_splunk resource
+
 v1.6.3 (2016-01-25) - akemner
 -------------------
 
