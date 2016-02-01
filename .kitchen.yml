@@ -19,8 +19,6 @@ platforms:
       memory: 2048
     driver_config:
       box: opentable/win-2012r2-standard-amd64-nocm
-      network:
-        - ["forwarded_port", {guest: 3389, host: 33389}]
   - name: centos-6.7
   - name: centos-7.1
   - name: debian-7.8
