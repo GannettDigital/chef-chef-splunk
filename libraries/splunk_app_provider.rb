@@ -158,7 +158,7 @@ class Chef
             notifies :restart, "service[#{node['splunk']['service']}]", :immediately
           end
         else
-          fail("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
+          raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
         end
       end
 
@@ -189,7 +189,7 @@ class Chef
             notifies :restart, "service[#{node['splunk']['service']}]", :immediately
           end
         else
-          fail("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
+          raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
         end
       end
 
