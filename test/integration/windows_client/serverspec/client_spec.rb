@@ -36,19 +36,19 @@ end
 describe 'outputs config should be configured per node attributes' do
   describe file("#{splunk_base_dir}/etc/system/local/outputs.conf") do
     it { should be_file }
-    its(:content) { should match(/defaultGroup=#{$node['splunk']['indexers_group1']['name']},#{$node['splunk']['indexers_group2']['name']}/) }
+    its(:content) { should match(/defaultGroup = #{$node['splunk']['indexers_group1']['name']}, #{$node['splunk']['indexers_group2']['name']}/) }
     # from the default attributes
     its(:content) { should match(/forwardedindex.0.whitelist = .*/) }
     its(:content) { should match(/forwardedindex.1.blacklist = _.*/) }
     its(:content) { should match(/forwardedindex.2.whitelist = _audit/) }
     its(:content) { should match(/forwardedindex.filter.disable = false/) }
     # tcpout
-    its(:content) { should match(/tcpout:#{$node['splunk']['indexers_group1']['name']}/) }
-    its(:content) { should match(/tcpout:#{$node['splunk']['indexers_group2']['name']}/) }
+    its(:content) { should match(/[tcpout:#{$node['splunk']['indexers_group1']['name']}]/) }
+    its(:content) { should match(/[tcpout:#{$node['splunk']['indexers_group2']['name']}]/) }
     # ['indexers_group1']['splunk_servers']
-    its(:content) { should match(/server=#{$node['splunk']['indexers_group1']['splunk_servers']}/) }
+    its(:content) { should match(/server = #{$node['splunk']['indexers_group1']['splunk_servers']}/) }
     # ['indexers_group2']['splunk_servers']
-    its(:content) { should match(/server=#{$node['splunk']['indexers_group2']['splunk_servers']}/) }
+    its(:content) { should match(/server = #{$node['splunk']['indexers_group2']['splunk_servers']}/) }
     # attributes for dynamic definition
     its(:content) { should match(/sslCertPath = \$SPLUNK_HOME\/etc\/certs\/cert.pem/) }
     its(:content) { should match(/sslCommonNameToCheck = sslCommonName/) }
