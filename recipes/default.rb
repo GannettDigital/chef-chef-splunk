@@ -25,7 +25,7 @@ if node['splunk']['disabled']
 end
 
 if node['splunk']['is_server']
-  fail 'Splunk server is not configured to run in a windows server' if node['platform_family'] == 'windows'
+  raise 'Splunk server is not configured to run in a windows server' if node['platform_family'] == 'windows'
   include_recipe 'chef-splunk::server'
 else
   include_recipe 'chef-splunk::client'
