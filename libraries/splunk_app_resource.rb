@@ -36,6 +36,7 @@ class Chef
       attribute :splunk_auth, kind_of: [String, Array], required: true
       attribute :app_dependencies, kind_of: Array, default: []
       attribute :templates, kind_of: [Array, Hash], default: []
+      attribute :template_cookbook, kind_of: String, required: false
       attribute :enabled, kind_of: [TrueClass, FalseClass, NilClass], default: false
       attribute :installed, kind_of: [TrueClass, FalseClass, NilClass], default: false
     end
