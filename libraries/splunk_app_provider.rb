@@ -40,22 +40,6 @@ class Chef
         else
           install_splunk_app
         end
-
-        directory app_dir do
-          recursive true
-          mode 00755
-          owner node['splunk']['user']['username'] unless node['splunk']['server']['runasroot']
-        end
-
-        if new_resource.templates
-          new_resource.templates.each do |t|
-            template "#{app_dir}/local/#{t}" do
-              source "#{new_resource.app_name}/#{t}.erb"
-              mode 00644
-              notifies :restart, "service[#{node['splunk']['service']}]"
-            end
-          end
-        end
       end
 
       action :remove do
@@ -156,6 +140,20 @@ class Chef
             source new_resource.remote_directory
             cookbook new_resource.cookbook
             notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+          end
+        elsif new_resource.templates
+          new_resource.templates.each do |t|
+            directory "#{app_dir}/local/" do
+              recursive true
+              mode 00755
+              owner node['splunk']['user']['username'] unless node['splunk']['server']['runasroot']
+            end
+            template "#{app_dir}/local/#{t}" do
+              source "#{new_resource.app_name}/#{t}.erb"
+              cookbook new_resource.template_cookbook if new_resource.template_cookbook
+              mode 00644
+              notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+            end
           end
         else
           raise("Could not find an installation source for splunk_app[#{new_resource.app_name}]")

@@ -53,3 +53,10 @@ splunk_app 'sanitycheck2' do
   end
   action :install
 end
+
+splunk_app 'generallogs_inputs' do
+  splunk_auth 'admin:notarealpassword'
+  templates ['inputs.conf']
+  template_cookbook 'test'
+  action :install
+end

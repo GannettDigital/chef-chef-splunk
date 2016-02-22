@@ -100,3 +100,17 @@ describe 'splunk app test 0.0.2 should be installed' do
     its(:stdout) { should_not match /disabled\s*=\s*(0|false)/ }
   end
 end
+
+describe 'splunk app generallogs_inputs should be installed' do
+  describe file("#{splunk_base_dir}/etc/apps/generallogs_inputs/local/inputs.conf") do
+    it { should exist }
+    it { should be_file }
+    its(:content) { should match(/index = main/) }
+    its(:content) { should match(/sourcetype=syslog/) }
+    its(:content) { should match(/disabled = 0/) }
+  end
+  describe command("#{splunk_base_dir}/bin/splunk btool --app=generallogs_inputs app list") do
+    its(:exit_status) { should eq 0 }
+    its(:stdout) { should_not match /disabled\s*=\s*(0|false)/ }
+  end
+end
