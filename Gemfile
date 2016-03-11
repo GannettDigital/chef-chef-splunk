@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'chef-vault', '~> 2.4.0'
+gem 'chef-vault', '~> 2.8.0'
 gem 'foodcritic', '= 6.0.0'
 gem 'rake', '= 10.5.0'
 gem 'berkshelf', '= 4.2.0'
