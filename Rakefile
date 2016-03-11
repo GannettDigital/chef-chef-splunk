@@ -1,5 +1,6 @@
-gem 'foodcritic', '5.0.0'
-gem 'test-kitchen', '1.4.2'
+gem 'test-kitchen', '1.6.0'
+gem 'rubocop', '= 0.36.0'
+gem 'foodcritic', '= 6.0.0'
 
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
@@ -15,7 +16,7 @@ namespace :style do
   FoodCritic::Rake::LintTask.new(:chef) do |t|
     t.options = {
       fail_tags: ['any'],
-      tags: ['~FC005', '~FC015']
+      tags: ['~FC005', '~FC015', '~FC057', '~FC058']
     }
   end
 end

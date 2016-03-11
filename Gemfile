@@ -1,35 +1,22 @@
 source 'https://rubygems.org'
 
-gem 'chef-vault', '~> 2.4.0'
+gem 'chef-vault', '~> 2.8.0'
+gem 'foodcritic', '= 6.0.0'
+gem 'rake', '= 10.5.0'
+gem 'berkshelf', '= 4.2.0'
+gem 'rubocop', '= 0.36.0'
+gem 'activesupport', '= 4.2.5.2'
 
-group :rake do
-  gem 'rake'
-  gem 'tomlrb'
+group :test do
+  gem 'chefspec', '= 4.5.0'
+  gem 'chef-zero', '= 4.5.0'
 end
 
-group :lint do
-  gem 'foodcritic', '~> 5.0'
-  gem 'rubocop', '~> 0.34'
-end
-
-group :unit do
-  gem 'berkshelf',  '~> 4.0'
-  gem 'chefspec',   '~> 4.4'
-end
-
-group :kitchen_windows do
-  gem 'winrm-transport'
-end
-
-group :kitchen_common do
-  gem 'test-kitchen', '~> 1.4.2'
-end
-
-group :kitchen_vagrant do
-  gem 'kitchen-vagrant', '~> 0.19'
-end
-
-group :kitchen_cloud do
-  gem 'kitchen-digitalocean'
-  gem 'kitchen-ec2'
+group :integration do
+  gem 'serverspec', '= 2.29.1'
+  gem 'test-kitchen', '= 1.6.0'
+  gem 'kitchen-vagrant', '= 0.19.0'
+  gem 'kitchen-ec2', '= 0.10.0'
+  gem 'winrm', '= 1.7.2'
+  gem 'winrm-fs', '= 0.3.1'
 end
