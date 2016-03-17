@@ -87,4 +87,6 @@ end
 service node['splunk']['service'] do
   supports status: true, restart: true
   action :start
+  timeout 120
+  retries 2
 end

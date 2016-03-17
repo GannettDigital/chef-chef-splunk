@@ -195,6 +195,8 @@ class Chef
         service node['splunk']['service'] do
           action :nothing
           supports status: true, restart: true
+          timeout 120
+          retries 2
         end
       end
 
