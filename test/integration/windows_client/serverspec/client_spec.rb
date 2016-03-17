@@ -74,9 +74,22 @@ describe 'splunk app sanitycheck2 should be removed' do
   end
 end
 
-describe 'splunk app bistro should not be installed' do
-  describe file("#{splunk_base_dir}/etc/apps/bistro") do
+describe 'splunk app bistro-1.0.2 should be removed' do
+  describe file("#{splunk_base_dir}/etc/apps/bistro-1.0.2") do
     it { should_not exist }
+  end
+end
+
+describe 'splunk app bistro 1.0.3 should be installed' do
+  describe file("#{splunk_base_dir}/etc/apps/bistro/default/app.conf") do
+    it { should exist }
+    it { should be_file }
+    its(:content) { should match(/version = 1.0.3/) }
+    its(:content) { should match(/id = bistro/) }
+  end
+  describe command("#{splunk_command} btool --app=bistro app list") do
+    its(:exit_status) { should eq 0 }
+    its(:stdout) { should_not match /disabled\s*=\s*(0|false)/ }
   end
 end
 
@@ -87,6 +100,22 @@ describe 'splunk app test 0.0.2 should be installed' do
     its(:content) { should match(/version = '0.0.2'/) }
   end
   describe command("#{splunk_command} btool --app=test app list") do
+    its(:exit_status) { should eq 0 }
+    its(:stdout) { should_not match /disabled\s*=\s*(0|false)/ }
+  end
+end
+
+describe 'splunk app windowseventlog_inputs should be installed' do
+  describe file("#{splunk_base_dir}/etc/apps/windowseventlog_inputs/local/inputs.conf") do
+    it { should exist }
+  it { should be_file }
+  its(:content) { should contain("[WinEventLog://Application]")}
+  its(:content) { should contain("[WinEventLog://System]")}
+  its(:content) { should contain("[WinEventLog://Security]")}
+  its(:content) { should contain("evt_resolve_ad_obj = 0")}
+  its(:content) { should contain("index = #{$node['splunk']['env_prefix']}#{$node['splunk']['environment']}")}
+  end
+  describe command("#{splunk_command} btool --app=windowseventlog_inputs app list") do
     its(:exit_status) { should eq 0 }
     its(:stdout) { should_not match /disabled\s*=\s*(0|false)/ }
   end

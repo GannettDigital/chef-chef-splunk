@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.7.2 (2016-03-16) - rlipke
+-------------------
+
+- Add windows compatible testing
+
 v1.7.1 (2016-03-10) - akemner
 -------------------
 
@@ -104,4 +109,3 @@ v1.0.2
 v1.0.0
 -----
 - Initial release
-
