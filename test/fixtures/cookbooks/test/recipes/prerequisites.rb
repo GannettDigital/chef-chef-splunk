@@ -13,22 +13,23 @@ unless platform_family?('windows')
     action [:install, :enable]
   end
 end
-  splunk_app 'bistro-1.0.2' do
-    remote_file 'https://github.com/ampledata/bistro/archive/1.0.2.tar.gz'
-    if node['platform_family'] == 'windows'
-      splunk_auth 'admin:changeme'
-    else
-      splunk_auth 'admin:notarealpassword'
-    end
-    # app_dependencies(
-    #   if node['platform_family'] == 'omnios'
-    #     ['ruby-19']
-    #   else
-    #     ['ruby']
-    #   end
-    # )
-    action :install
+splunk_app 'bistro-1.0.2' do
+  remote_file 'https://github.com/ampledata/bistro/archive/1.0.2.tar.gz'
+  if node['platform_family'] == 'windows'
+    splunk_auth 'admin:changeme'
+  else
+    splunk_auth 'admin:notarealpassword'
   end
+  app_dependencies(
+    if node['platform_family'] == 'omnios'
+      ['ruby-19']
+    else
+      ['ruby']
+    end
+  ) unless node.platform_family == 'windows'
+  action :install
+end
+
 splunk_app 'test' do
   app_name 'test'
   if node['platform_family'] == 'windows'
