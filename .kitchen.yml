@@ -188,6 +188,8 @@ suites:
       - debian-8.1
       - fedora-21
       - omnios-r151006c
+      - ubuntu-12.04
+      - ubuntu-14.04
 
   - name: windows_client
     run_list:
