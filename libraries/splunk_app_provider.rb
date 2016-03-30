@@ -139,7 +139,7 @@ class Chef
           remote_directory app_dir do
             source new_resource.remote_directory
             cookbook new_resource.cookbook
-            notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+            notifies :restart, "service[#{node['splunk']['service']}]", :delayed
           end
         elsif new_resource.templates
           new_resource.templates.each do |t|
@@ -152,7 +152,7 @@ class Chef
               source "#{new_resource.app_name}/#{t}.erb"
               cookbook new_resource.template_cookbook if new_resource.template_cookbook
               mode 00644
-              notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+              notifies :restart, "service[#{node['splunk']['service']}]", :delayed
             end
           end
         else
@@ -184,7 +184,7 @@ class Chef
           remote_directory app_dir do
             source new_resource.remote_directory
             cookbook new_resource.cookbook
-            notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+            notifies :restart, "service[#{node['splunk']['service']}]", :delayed
           end
         else
           fail("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
