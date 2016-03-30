@@ -33,7 +33,7 @@ class Chef
       end
 
       action :install do
-        splunk_service
+        # splunk_service
         install_dependencies unless new_resource.app_dependencies.empty?
         if app_installed?
           upgrade_splunk_app if upgrade?
@@ -43,13 +43,13 @@ class Chef
       end
 
       action :remove do
-        splunk_service
+        # splunk_service
         remove_splunk_app
       end
 
       action :enable do
         unless app_enabled? # ~FC023
-          splunk_service
+          # splunk_service
           execute "splunk-enable-#{new_resource.app_name}" do
             command "#{splunk_cmd} enable app #{new_resource.app_name} -auth #{splunk_auth(new_resource.splunk_auth)}"
             notifies :restart, "service[#{node['splunk']['service']}]"
@@ -59,7 +59,7 @@ class Chef
 
       action :disable do
         if app_enabled? # ~FC023
-          splunk_service
+          # splunk_service
           execute "splunk-disable-#{new_resource.app_name}" do
             command "#{splunk_cmd} disable app #{new_resource.app_name} -auth #{splunk_auth(new_resource.splunk_auth)}"
             not_if { ::File.exist?("#{splunk_dir}/etc/disabled-apps/#{new_resource.app_name}") }
@@ -139,7 +139,7 @@ class Chef
           remote_directory app_dir do
             source new_resource.remote_directory
             cookbook new_resource.cookbook
-            notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+            notifies :restart, "service[#{node['splunk']['service']}]", :delayed
           end
         elsif new_resource.templates
           new_resource.templates.each do |t|
@@ -152,7 +152,7 @@ class Chef
               source "#{new_resource.app_name}/#{t}.erb"
               cookbook new_resource.template_cookbook if new_resource.template_cookbook
               mode 00644
-              notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+              notifies :restart, "service[#{node['splunk']['service']}]", :delayed
             end
           end
         else
@@ -184,7 +184,7 @@ class Chef
           remote_directory app_dir do
             source new_resource.remote_directory
             cookbook new_resource.cookbook
-            notifies :restart, "service[#{node['splunk']['service']}]", :immediately
+            notifies :restart, "service[#{node['splunk']['service']}]", :delayed
           end
         else
           fail("Could not find an installation source for splunk_app[#{new_resource.app_name}]")

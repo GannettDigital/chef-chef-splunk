@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.7.3 (2016-03-30) - akemner
+-------------------
+
+- update service restarts in splunk_app to delayed to speed up app creation if multiple apps
+
 v1.7.2 (2016-03-16) - rlipke
 -------------------
 
