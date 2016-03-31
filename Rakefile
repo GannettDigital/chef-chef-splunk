@@ -39,7 +39,7 @@ namespace :integration do
   end
   task :ec2 do
     ENV['KITCHEN_YAML'] = './.kitchen.ec2.yml'
-    Kitchen::CLI.new([], concurrency: 5, destroy: 'always').test
+    Kitchen::CLI.new([], concurrency: 1, destroy: 'always').test
   end
   task :ec2_singlethread do
     ENV['KITCHEN_YAML'] = './.kitchen.ec2.yml'
