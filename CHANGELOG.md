@@ -5,7 +5,7 @@ This file is used to list changes made in each version of the splunk cookbook.
 v1.7.4 (2016-03-30) - akemner
 -------------------
 
-- reduce kitchen.ec2 concurrency to 1
+- reduce kitchen.ec2 concurrency to 1, gut unused platforms and testing suites
 
 v1.7.3 (2016-03-30) - akemner
 -------------------
