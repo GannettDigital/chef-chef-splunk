@@ -2,6 +2,11 @@ splunk CHANGELOG
 ================
 This file is used to list changes made in each version of the splunk cookbook.
 
+v1.8.1 (2016-06-10) - erogneby
+-------------------
+
+- adding support for custom package install for forwarder.
+
 v1.8.0 (2016-03-30) - akemner
 -------------------
 

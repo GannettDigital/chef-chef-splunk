@@ -21,7 +21,7 @@ platforms:
       box: opentable/win-2012r2-standard-amd64-nocm
       require_chef_omnibus: 12.5.1
   - name: centos-6.7
-  - name: centos-7.1
+  - name: centos-7.2
   - name: ubuntu-12.04
   - name: ubuntu-14.04
 
@@ -79,6 +79,50 @@ suites:
         server:
           runasroot: false
         accept_license: true
+        indexers_group1:
+          splunk_servers: '192.168.10.1:9997, 192.168.10.2:9997, 192.168.10.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        indexers_group2:
+          splunk_servers: '192.168.20.1:9997, 192.168.20.2:9997, 192.168.20.3:9997'
+          outputs_conf:
+            sslCommonNameToCheck: sslCommonName
+            sslCertPath: $SPLUNK_HOME/etc/certs/cert.pem
+            sslPassword: password
+            sslRootCAPath: $SPLUNK_HOME/etc/certs/cacert.pem
+            sslVerifyServerCert: false
+        inputs_conf:
+          host: localhost
+          ports:
+            - port_num: 123123
+              config:
+                connection_host: dns
+                sourcetype: syslog
+                source: tcp:123123
+    excludes:
+      - windows-2012r2
+      - ubuntu-12.04
+      - ubuntu-14.04
+
+  - name: forwarder_package
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[yum-gd]
+      - recipe[chef-splunk::default]
+      - recipe[test::prerequisites]
+      - recipe[test::postrequisites]
+    attributes:
+      dev_mode: true
+      splunk:
+        server:
+          runasroot: false
+        accept_license: true
+        forwarder:
+          package_install: true
         indexers_group1:
           splunk_servers: '192.168.10.1:9997, 192.168.10.2:9997, 192.168.10.3:9997'
           outputs_conf:
