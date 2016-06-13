@@ -77,7 +77,8 @@ default['splunk']['inputs_conf']['ports'] = []
 default['splunk']['user']['home'] = '/opt/splunk' if node['splunk']['is_server']
 
 default['splunk']['server']['runasroot'] = true
-
+default['splunk']['forwarder']['package_install'] = false
+default['splunk']['forwarder']['package_version'] = nil
 case node['platform_family']
 when 'windows'
   if node['kernel']['machine'] == 'x86_64'

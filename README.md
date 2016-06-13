@@ -10,9 +10,10 @@ changing the password with Chef and Chef Vault.
 
 This recipe downloads packages from Splunk directly. There are
 attributes to set a URL to retrieve the packages, so if the packages
-are mirrored locally, supply the local URL instead. At this time the
-cookbook doesn't support installing from networked package managers
-(like apt or yum), since Splunk doesn't provide package repositories.
+are mirrored locally, supply the local URL instead. If you manage a package
+repository you can specify to install from package for the splunkforwarder and
+the install_forwarder recipe will install from there.  Specifying a version is
+optional.
 
 ## Requirements
 
@@ -27,7 +28,7 @@ without modification.
 
 * Debian 7
 * Ubuntu 12.04, 14.04
-* CentOS 6
+* CentOS 6 & 7
 * OmniOS r151008
 * Windows2012r2(client.rb only)
 
@@ -383,7 +384,7 @@ node of type cluster master, that is with `splunk_clustering_enable:true` and
 `splunk_clustering_mode:master` in the same `chef_environment` and
 use that server's IP when configuring a cluster search head or a cluster
 peer node to communicate with the cluster master (Refer to `master_uri` attribute
-of clustering stanza in `etc/system/local/server.conf`). 
+of clustering stanza in `etc/system/local/server.conf`).
 
 Indexer clustering is used to achieve some data availability & recovery. To learn
 more about Splunk indexer clustering, refer to [Splunk Docs](http://docs.splunk.com/Documentation/Splunk/latest/Indexer/Aboutclusters).

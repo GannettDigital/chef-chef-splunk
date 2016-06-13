@@ -18,6 +18,13 @@
 # limitations under the License.
 #
 
-splunk_installer 'splunkforwarder' do
-  url node['splunk']['forwarder']['url']
+if node['splunk']['forwarder']['package_install']
+  package 'splunkforwarder' do
+    action :install
+    version node['splunk']['forwarder']['package_version'] unless node['splunk']['forwarder']['package_version'].nil?
+  end
+else
+  splunk_installer 'splunkforwarder' do
+    url node['splunk']['forwarder']['url']
+  end
 end
